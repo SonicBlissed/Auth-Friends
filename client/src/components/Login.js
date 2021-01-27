@@ -20,6 +20,18 @@ class Login extends React.Component {
 
   login = e => {
     e.preventDefault();
+    //- Use axios to do a post request
+    //- If request is successful, load console log token
+    //- If request fails, show error
+    axios.post('http://localhost:5000/api/login', this.state.credentials)
+    .then(res => {
+      console.log(res.data.payload)
+      localStorage.setItem('token', res.data.payload)
+      this.props.history.push('/protected') //rediection
+    })
+    .catch(err =>{
+      console.log(err)
+    })
   };
 
   render() {

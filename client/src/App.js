@@ -3,12 +3,24 @@ import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
 import Login from './components/Login';
 import GasPrices from './components/GasPrices';
-
+import {PrivateRoute} from './components/PrivateRoute';
 import axios from 'axios';
 
 function App() {
   const logout = () => {
-    
+    axios.post('http://localhost:5000/api/logout', {
+      headers:{
+        Authorization: localStorage.getItem('token')
+      }
+    })
+    .then(res=> {
+      localStorage.removeItem('token')
+      window.location.href='/login' //redirect method
+      console.log(res)
+    })
+    .catch(err=> {
+      console.log(err)
+    })
   };
 
 
@@ -23,11 +35,13 @@ function App() {
             <Link onClick={logout}>Logout</Link>
           </li>
           <li>
-            <Link to="/protected">Protected Page</Link>
+             
+               <Link to="/protected">Protected Page</Link>
+             
           </li>
         </ul>
         <Switch>
-          <Route exact path="/protected" component={GasPrices} />
+          <PrivateRoute exact path="/protected" component={GasPrices} />
           <Route path="/login" component={Login} />
           <Route component={Login} />
         </Switch>
